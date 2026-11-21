@@ -46,4 +46,28 @@ class StockMovement extends Model
     {
         return $this->belongsTo(Sale::class);
     }
+
+    /**
+     * Direction-aware quantity: positive for stock in, negative for stock out.
+     * Adjustment movements already store a signed delta.
+     */
+    public function signedQuantity(): float
+    {
+        $quantity = (float) $this->quantity;
+
+        return match ($this->type) {
+            self::TYPE_IN => $quantity,
+            self::TYPE_OUT => -$quantity,
+            default => $quantity,
+        };
+    }
+
+    public function label(): string
+    {
+        return match ($this->type) {
+            self::TYPE_IN => 'Stock in',
+            self::TYPE_OUT => 'Stock out',
+            default => 'Adjustment',
+        };
+    }
 }
