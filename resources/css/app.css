@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+@layer utilities {
+    .money {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    .print-card {
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+}

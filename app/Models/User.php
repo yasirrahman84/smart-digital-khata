@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -24,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'store_name',
+        'store_phone',
+        'store_address',
+        'currency',
+        'reminder_after_days',
+        'sms_enabled',
     ];
 
     /**
@@ -46,11 +50,41 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'sms_enabled' => 'boolean',
+            'reminder_after_days' => 'integer',
         ];
     }
 
-    public function customers()
-{
-    return $this->hasMany(Customer::class);
-}
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function ledgerEntries(): HasMany
+    {
+        return $this->hasMany(LedgerEntry::class);
+    }
+
+    public function smsMessages(): HasMany
+    {
+        return $this->hasMany(SmsMessage::class);
+    }
+
+    /**
+     * Name shown across the app: the shop name if set, otherwise the owner's name.
+     */
+    public function storeName(): string
+    {
+        return $this->store_name ?: $this->name;
+    }
 }

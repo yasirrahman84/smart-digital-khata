@@ -2,123 +2,192 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Services\KhataService;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class CustomerController extends Controller
 {
+    public function __construct(private KhataService $khata) {}
+
     /**
-     * Display a listing of customers.
+     * Customer list with search, filter and balance sorting.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::where('user_id', auth()->id())
-            ->latest()
+        $search = trim((string) $request->query('q'));
+        $filter = (string) $request->query('filter', 'all');
+        $sort = (string) $request->query('sort', 'name');
+
+        $customers = Customer::where('user_id', $request->user()->id)
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->withBalance()
             ->get();
 
-        return view('customers.index', compact('customers'));
+        if ($filter === 'owing') {
+            $customers = $customers->filter(fn (Customer $customer) => $customer->balance > 0);
+        } elseif ($filter === 'clear') {
+            $customers = $customers->filter(fn (Customer $customer) => $customer->balance <= 0);
+        } elseif ($filter === 'inactive') {
+            $customers = $customers->where('is_active', false);
+        }
+
+        $customers = match ($sort) {
+            'balance' => $customers->sortByDesc('balance'),
+            'balance_asc' => $customers->sortBy('balance'),
+            'recent' => $customers->sortByDesc('created_at'),
+            default => $customers->sortBy(fn (Customer $customer) => mb_strtolower($customer->name)),
+        };
+
+        $customers = $this->paginate($customers->values(), $request, 15)
+            ->withQueryString();
+
+        $summary = [
+            'count' => $customers->total(),
+            'receivable' => round(Customer::where('user_id', $request->user()->id)->withBalance()->get()->sum('balance'), 2),
+        ];
+
+        return view('customers.index', compact('customers', 'summary', 'search', 'filter', 'sort'));
     }
 
-    /**
-     * Show the form for creating a new customer.
-     */
     public function create()
     {
-        return view('customers.create');
+        return view('customers.create', [
+            'customer' => new Customer(['is_active' => true, 'opening_balance' => 0]),
+        ]);
     }
 
-    /**
-     * Store a newly created customer.
-     */
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
-            'opening_balance' => 'nullable|numeric|min:0',
-        ]);
-
-        Customer::create([
-            'user_id' => auth()->id(),
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'opening_balance' => $request->opening_balance ?? 0,
+        $customer = Customer::create([
+            'user_id' => $request->user()->id,
+            'name' => $request->validated('name'),
+            'phone' => $request->validated('phone'),
+            'address' => $request->validated('address'),
+            'notes' => $request->validated('notes'),
+            'opening_balance' => $request->validated('opening_balance') ?? 0,
+            'is_active' => $request->boolean('is_active', true),
         ]);
 
         return redirect()
-            ->route('customers.index')
-            ->with('success', 'Customer added successfully!');
+            ->route('customers.show', $customer)
+            ->with('success', "{$customer->name} has been added to your khata.");
     }
 
-    /**
-     * Display the specified customer.
-     */
-    public function show(Customer $customer)
+    public function show(Request $request, Customer $customer)
     {
-        $this->authorizeCustomer($customer);
+        $this->authorize('view', $customer);
 
-        return view('customers.show', compact('customer'));
+        $statement = $this->khata->statement($customer);
+
+        $entries = $this->paginate($statement->reverse()->values(), $request, 20)
+            ->withQueryString();
+
+        $totals = [
+            'udhaar' => round($customer->ledgerEntries()->where('type', 'udhaar')->sum('amount'), 2),
+            'payment' => round($customer->ledgerEntries()->where('type', 'payment')->sum('amount'), 2),
+        ];
+
+        $recentSales = $customer->sales()
+            ->notVoided()
+            ->latest('sale_date')
+            ->limit(5)
+            ->get();
+
+        $recentMessages = $customer->smsMessages()
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        return view('customers.show', compact(
+            'customer',
+            'entries',
+            'totals',
+            'recentSales',
+            'recentMessages',
+        ) + ['balance' => $customer->calculateBalance()]);
     }
 
-    /**
-     * Show the form for editing the specified customer.
-     */
     public function edit(Customer $customer)
     {
-        $this->authorizeCustomer($customer);
+        $this->authorize('update', $customer);
 
         return view('customers.edit', compact('customer'));
     }
 
-    /**
-     * Update the specified customer.
-     */
-    public function update(Request $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $this->authorizeCustomer($customer);
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
-            'opening_balance' => 'nullable|numeric|min:0',
-        ]);
-
         $customer->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'opening_balance' => $request->opening_balance ?? 0,
+            'name' => $request->validated('name'),
+            'phone' => $request->validated('phone'),
+            'address' => $request->validated('address'),
+            'notes' => $request->validated('notes'),
+            'opening_balance' => $request->validated('opening_balance') ?? 0,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()
-            ->route('customers.index')
-            ->with('success', 'Customer updated successfully!');
+            ->route('customers.show', $customer)
+            ->with('success', 'Customer details updated.');
     }
 
-    /**
-     * Remove the specified customer.
-     */
     public function destroy(Customer $customer)
     {
-        $this->authorizeCustomer($customer);
+        $this->authorize('delete', $customer);
+
+        if ($customer->calculateBalance() > 0) {
+            return redirect()
+                ->route('customers.show', $customer)
+                ->with('error', 'This customer still owes money. Settle the balance before removing them.');
+        }
 
         $customer->delete();
 
         return redirect()
             ->route('customers.index')
-            ->with('success', 'Customer deleted successfully!');
+            ->with('success', "{$customer->name} was removed from your khata.");
     }
 
     /**
-     * Make sure the customer belongs to the logged-in user.
+     * Printable statement for a customer.
      */
-    private function authorizeCustomer(Customer $customer)
+    public function print(Customer $customer)
     {
-        if ($customer->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('view', $customer);
+
+        $entries = $this->khata->statement($customer);
+
+        return view('customers.print', [
+            'customer' => $customer,
+            'entries' => $entries,
+            'balance' => $customer->calculateBalance(),
+        ]);
+    }
+
+    /**
+     * Paginate an in-memory collection (balances are computed in PHP).
+     *
+     * @param  Collection<int, mixed>  $items
+     */
+    private function paginate(Collection $items, Request $request, int $perPage): LengthAwarePaginator
+    {
+        $page = max(1, (int) $request->query('page', 1));
+
+        return new LengthAwarePaginator(
+            $items->forPage($page, $perPage)->values(),
+            $items->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()],
+        );
     }
 }
