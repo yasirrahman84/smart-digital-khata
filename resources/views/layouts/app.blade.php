@@ -36,7 +36,7 @@
 
 <div x-data="{ drawer: false }" class="min-h-screen lg:flex">
     {{-- Desktop sidebar --}}
-    <aside class="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:shrink-0 lg:flex-col bg-emerald-950 text-emerald-100">
+    <aside class="no-print hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:shrink-0 lg:flex-col bg-emerald-950 text-emerald-100">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-5 py-5">
             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-500 text-lg font-bold text-white">ک</span>
             <span class="min-w-0">
@@ -127,7 +127,7 @@
 
     <div class="flex min-w-0 flex-1 flex-col">
         {{-- Top bar --}}
-        <header class="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
+        <header class="no-print sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
             <div class="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
                 <button type="button" class="rounded-lg p-2 text-stone-600 hover:bg-stone-100 lg:hidden" @click="drawer = true" aria-label="Open menu">
                     <x-heroicon-o-bars-3 class="h-6 w-6" />
@@ -180,7 +180,7 @@
     </div>
 
     {{-- Mobile bottom nav --}}
-    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-white/95 backdrop-blur lg:hidden">
+    <nav class="no-print fixed inset-x-0 bottom-0 z-40 border-t border-stone-200 bg-white/95 backdrop-blur lg:hidden">
         <div class="mx-auto flex max-w-md items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
             @foreach ($bottomItems as $item)
                 <x-nav-item :route="$item['route']" :label="$item['label']" :icon="$item['icon']" :active="$item['active']" variant="bottom" class="flex-1" />

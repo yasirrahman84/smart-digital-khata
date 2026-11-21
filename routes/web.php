@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KhataController;
 use App\Http\Controllers\LedgerEntryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +17,7 @@ Route::get('/', function () {
         : view('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,6 +46,13 @@ Route::middleware('auth')->group(function () {
     Route::post('sales', [SaleController::class, 'store'])->name('sales.store');
     Route::get('sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
     Route::post('sales/{sale}/void', [SaleController::class, 'void'])->name('sales.void');
+
+    Route::get('reports/receivables', [ReportController::class, 'receivables'])->name('reports.receivables');
+    Route::get('reports/receivables/export', [ReportController::class, 'receivablesCsv'])->name('reports.receivables.csv');
+    Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('reports/sales/export', [ReportController::class, 'salesCsv'])->name('reports.sales.csv');
+    Route::get('reports/stock', [ReportController::class, 'stock'])->name('reports.stock');
+    Route::get('reports/stock/export', [ReportController::class, 'stockCsv'])->name('reports.stock.csv');
 });
 
 require __DIR__.'/auth.php';
