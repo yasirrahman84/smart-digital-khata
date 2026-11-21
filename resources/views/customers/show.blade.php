@@ -68,10 +68,34 @@
                 @endif
 
                 @if (Route::has('public.statement'))
-                    <a href="{{ route('public.statement', $customer->public_token) }}" target="_blank" class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200 hover:bg-emerald-50">
+                    @php
+                        $statementUrl = route('public.statement', $customer->public_token);
+                        $digits = preg_replace('/\D+/', '', (string) $customer->phone);
+
+                        if ($digits && str_starts_with($digits, '0')) {
+                            $digits = '92'.substr($digits, 1);
+                        }
+
+                        $waMessage = "Assalam-o-Alaikum {$customer->name}, your balance at ".auth()->user()->storeName().' is Rs '.number_format($balance, 0).". Statement: {$statementUrl}";
+                        $waUrl = 'https://wa.me/'.($digits ?: '').'?text='.rawurlencode($waMessage);
+                    @endphp
+
+                    <a href="{{ $statementUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200 hover:bg-emerald-50">
                         <x-heroicon-o-arrow-top-right-on-square class="h-4 w-4" />
                         Customer link
                     </a>
+
+                    <button type="button" data-link="{{ $statementUrl }}" onclick="copyStatementLink(this)" class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-stone-700 shadow-sm ring-1 ring-stone-200 hover:bg-stone-100">
+                        <x-heroicon-o-clipboard-document class="h-4 w-4" />
+                        Copy link
+                    </button>
+
+                    @if ($customer->phone)
+                        <a href="{{ $waUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200 hover:bg-emerald-50">
+                            <x-heroicon-o-chat-bubble-left-right class="h-4 w-4" />
+                            WhatsApp
+                        </a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -262,4 +286,39 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            function copyStatementLink(button) {
+                const link = button.dataset.link;
+                const original = button.innerHTML;
+
+                const done = () => {
+                    button.textContent = 'Copied!';
+                    setTimeout(() => { button.innerHTML = original; }, 1600);
+                };
+
+                const fallback = () => {
+                    const input = document.createElement('textarea');
+                    input.value = link;
+                    document.body.appendChild(input);
+                    input.select();
+
+                    try {
+                        document.execCommand('copy');
+                        done();
+                    } catch (error) {
+                        // Clipboard is unavailable; the link is still visible in the address bar.
+                    }
+
+                    document.body.removeChild(input);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(link).then(done).catch(fallback);
+                } else {
+                    fallback();
+                }
+            }
+        </script>
+    @endpush
 </x-app-layout>

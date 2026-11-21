@@ -7,8 +7,10 @@ use App\Http\Controllers\LedgerEntryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicStatementController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +21,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
+Route::get('/s/{token}', [PublicStatementController::class, 'show'])
+    ->middleware('throttle:30,1')
+    ->name('public.statement');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -27,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('customers', CustomerController::class);
 
     Route::get('customers/{customer}/print', [CustomerController::class, 'print'])->name('customers.print');
+    Route::post('customers/{customer}/remind', [CustomerController::class, 'remind'])->name('customers.remind');
 
     Route::post('customers/{customer}/entries', [LedgerEntryController::class, 'store'])->name('customers.entries.store');
     Route::delete('customers/{customer}/entries/{entry}', [LedgerEntryController::class, 'destroy'])->name('customers.entries.destroy');
@@ -53,6 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::get('reports/sales/export', [ReportController::class, 'salesCsv'])->name('reports.sales.csv');
     Route::get('reports/stock', [ReportController::class, 'stock'])->name('reports.stock');
     Route::get('reports/stock/export', [ReportController::class, 'stockCsv'])->name('reports.stock.csv');
+
+    Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

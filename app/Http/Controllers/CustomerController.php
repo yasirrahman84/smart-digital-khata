@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Services\KhataService;
+use App\Services\ReminderService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -155,6 +156,36 @@ class CustomerController extends Controller
         return redirect()
             ->route('customers.index')
             ->with('success', "{$customer->name} was removed from your khata.");
+    }
+
+    /**
+     * Send an SMS payment reminder to this customer.
+     */
+    public function remind(Request $request, Customer $customer, ReminderService $reminders)
+    {
+        $this->authorize('update', $customer);
+
+        if (! $customer->phone) {
+            return back()->with('error', 'Add a phone number before sending a reminder.');
+        }
+
+        if ($customer->calculateBalance() <= 0) {
+            return back()->with('error', 'This customer has no outstanding balance.');
+        }
+
+        if (! $request->user()->sms_enabled) {
+            return back()->with('error', 'SMS reminders are turned off in settings.');
+        }
+
+        $message = $reminders->send($customer);
+
+        if ($message->status === 'failed') {
+            return back()->with('error', 'Reminder failed: '.$message->error);
+        }
+
+        $verb = $message->status === 'logged' ? 'logged' : 'sent';
+
+        return back()->with('success', "Reminder {$verb} for {$customer->name}.");
     }
 
     /**
