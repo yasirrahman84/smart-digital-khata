@@ -20,7 +20,7 @@
             <div class="lg:col-span-3">
                 <div class="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
                     <div class="relative">
-                        <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-400">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-500">
                             <x-heroicon-o-magnifying-glass class="h-5 w-5" />
                         </span>
                         <x-text-input type="search" class="pl-10" x-model="search" placeholder="Search products by name or SKU…" autofocus />
@@ -88,7 +88,7 @@
                                             <span x-text="item.stock + ' in stock'"></span>
                                         </p>
                                     </div>
-                                    <button type="button" @click="remove(index)" class="rounded-lg p-1 text-stone-400 hover:bg-rose-50 hover:text-rose-600" aria-label="Remove item">
+                                    <button type="button" @click="remove(index)" class="rounded-lg p-1 text-stone-500 hover:bg-rose-50 hover:text-rose-600" aria-label="Remove item">
                                         <x-heroicon-o-x-mark class="h-4 w-4" />
                                     </button>
                                 </div>
@@ -126,7 +126,7 @@
                         </template>
 
                         <div x-show="cart.length === 0" class="px-5 py-10 text-center">
-                            <span class="mx-auto grid h-11 w-11 place-items-center rounded-full bg-stone-100 text-stone-400">
+                            <span class="mx-auto grid h-11 w-11 place-items-center rounded-full bg-stone-100 text-stone-500">
                                 <x-heroicon-o-shopping-cart class="h-5 w-5" />
                             </span>
                             <p class="mt-3 text-sm font-medium text-stone-700">Cart is empty</p>

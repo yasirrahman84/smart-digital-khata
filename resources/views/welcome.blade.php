@@ -8,6 +8,10 @@
 
     <title>{{ config('app.name') }}</title>
 
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
@@ -74,7 +78,7 @@
             <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-xl shadow-stone-900/5">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium uppercase tracking-wide text-stone-400">Total receivable</p>
+                        <p class="text-xs font-medium uppercase tracking-wide text-stone-500">Total receivable</p>
                         <p class="mt-1 text-3xl font-extrabold text-stone-900">Rs 38,450</p>
                     </div>
                     <span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">

@@ -5,7 +5,7 @@
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <form method="GET" action="{{ route('customers.index') }}" class="flex flex-1 flex-col gap-2 sm:flex-row">
             <div class="relative flex-1">
-                <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-400">
+                <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-500">
                     <x-heroicon-o-magnifying-glass class="h-5 w-5" />
                 </span>
                 <x-text-input name="q" type="search" class="pl-10" :value="$search" placeholder="Search by name or phone…" />
@@ -72,7 +72,7 @@
                                     <span class="min-w-0">
                                         <span class="block truncate font-medium text-stone-900">{{ $customer->name }}</span>
                                         @unless ($customer->is_active)
-                                            <span class="text-xs text-stone-400">Inactive</span>
+                                            <span class="text-xs text-stone-500">Inactive</span>
                                         @endunless
                                     </span>
                                 </a>
@@ -116,10 +116,10 @@
                         <div class="text-right">
                             @if ($customer->balance > 0)
                                 <p class="font-bold text-rose-600"><x-money :value="$customer->balance" /></p>
-                                <p class="text-[11px] text-stone-400">owes</p>
+                                <p class="text-[11px] text-stone-500">owes</p>
                             @elseif ($customer->balance < 0)
                                 <p class="font-bold text-emerald-600"><x-money :value="$customer->balance" /></p>
-                                <p class="text-[11px] text-stone-400">advance</p>
+                                <p class="text-[11px] text-stone-500">advance</p>
                             @else
                                 <x-badge tone="emerald">Settled</x-badge>
                             @endif

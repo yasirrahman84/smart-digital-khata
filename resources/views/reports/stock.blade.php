@@ -45,7 +45,7 @@
                             <tr class="hover:bg-stone-50">
                                 <td class="px-5 py-3">
                                     <a href="{{ route('products.show', $product) }}" class="font-medium text-stone-900 hover:text-emerald-700">{{ $product->name }}</a>
-                                    <span class="block text-xs text-stone-400">{{ $product->sku ?: 'No SKU' }}</span>
+                                    <span class="block text-xs text-stone-500">{{ $product->sku ?: 'No SKU' }}</span>
                                 </td>
                                 <td class="px-5 py-3 text-stone-600">{{ $product->unit }}</td>
                                 <td class="px-5 py-3 text-right font-semibold text-stone-800">

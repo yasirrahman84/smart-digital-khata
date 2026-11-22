@@ -9,7 +9,7 @@
             : 'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ' . ($isActive ? 'bg-emerald-800 text-white' : 'text-emerald-200 hover:bg-emerald-900 hover:text-white');
     @endphp
 
-    <a href="{{ route($route) }}" {{ $attributes->merge(['class' => $classes]) }}>
+    <a href="{{ route($route) }}" {{ $attributes->merge(['class' => $classes]) }} @if ($isActive) aria-current="page" @endif>
         <x-dynamic-component
             :component="'heroicon-o-'.$icon"
             class="{{ $variant === 'bottom' ? 'h-6 w-6' : 'h-5 w-5 shrink-0' }}"

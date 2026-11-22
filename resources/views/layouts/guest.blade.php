@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#022c22">
+    <meta name="description" content="Smart Digital Khata — udhaar ledger, stock alerts and payment reminders for Kirana stores.">
 
     <title>{{ isset($title) ? $title.' · '.config('app.name') : config('app.name') }}</title>
+
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -27,7 +31,7 @@
             {{ $slot }}
         </div>
 
-        <p class="mt-6 text-xs text-stone-400">© {{ date('Y') }} Smart Digital Khata</p>
+        <p class="mt-6 text-xs text-stone-500">© {{ date('Y') }} Smart Digital Khata</p>
     </div>
 </body>
 </html>

@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Disallow: /dashboard
+Disallow: /customers
+Disallow: /khata
+Disallow: /products
+Disallow: /sales
+Disallow: /reports
+Disallow: /notifications
+Disallow: /settings
+Disallow: /profile
+Disallow: /s/
+Allow: /
+
+Sitemap:

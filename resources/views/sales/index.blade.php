@@ -88,9 +88,9 @@
                     </thead>
                     <tbody class="divide-y divide-stone-100">
                         @foreach ($sales as $sale)
-                            <tr class="{{ $sale->isVoided() ? 'bg-stone-50 text-stone-400' : 'hover:bg-stone-50' }}">
+                            <tr class="{{ $sale->isVoided() ? 'bg-stone-50 text-stone-500' : 'hover:bg-stone-50' }}">
                                 <td class="px-5 py-3.5">
-                                    <a href="{{ route('sales.show', $sale) }}" class="font-semibold {{ $sale->isVoided() ? 'text-stone-400 line-through' : 'text-emerald-700 hover:text-emerald-900' }}">
+                                    <a href="{{ route('sales.show', $sale) }}" class="font-semibold {{ $sale->isVoided() ? 'text-stone-500 line-through' : 'text-emerald-700 hover:text-emerald-900' }}">
                                         {{ $sale->invoice_no }}
                                     </a>
                                     @if ($sale->isVoided())
@@ -103,7 +103,7 @@
                                     <x-badge :tone="$sale->isUdhaar() ? 'amber' : 'emerald'">{{ $sale->isUdhaar() ? 'Udhaar' : 'Cash' }}</x-badge>
                                 </td>
                                 <td class="px-5 py-3.5 text-right text-stone-600">{{ $sale->items_count }}</td>
-                                <td class="px-5 py-3.5 text-right font-semibold {{ $sale->isVoided() ? 'text-stone-400 line-through' : 'text-stone-900' }}">
+                                <td class="px-5 py-3.5 text-right font-semibold {{ $sale->isVoided() ? 'text-stone-500 line-through' : 'text-stone-900' }}">
                                     <x-money :value="$sale->total" />
                                 </td>
                                 <td class="px-5 py-3.5 text-right">

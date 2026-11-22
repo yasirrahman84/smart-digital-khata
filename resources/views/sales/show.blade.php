@@ -54,7 +54,7 @@
             </div>
 
             <div class="text-right">
-                <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Sale receipt</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Sale receipt</p>
                 <p class="text-sm font-bold text-stone-900">{{ $sale->invoice_no }}</p>
                 <p class="text-sm text-stone-500">{{ $sale->sale_date->format('d M Y, g:i a') }}</p>
             </div>
@@ -62,7 +62,7 @@
 
         <section class="mt-5 flex flex-wrap items-start justify-between gap-4">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Customer</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Customer</p>
                 @if ($sale->customer)
                     <a href="{{ route('customers.show', $sale->customer) }}" class="font-bold text-stone-900 hover:text-emerald-700">{{ $sale->customer->name }}</a>
                     <p class="text-sm text-stone-500">{{ $sale->customer->phone ?: 'No phone number' }}</p>
@@ -72,7 +72,7 @@
             </div>
 
             <div class="text-right">
-                <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Payment</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Payment</p>
                 <x-badge :tone="$sale->isUdhaar() ? 'amber' : 'emerald'" class="mt-1 text-sm">
                     {{ $sale->isUdhaar() ? 'Udhaar' : 'Cash' }}
                 </x-badge>
@@ -144,7 +144,7 @@
             </p>
         @endif
 
-        <footer class="mt-8 border-t border-stone-200 pt-4 text-center text-xs text-stone-400">
+        <footer class="mt-8 border-t border-stone-200 pt-4 text-center text-xs text-stone-500">
             Thank you for shopping with {{ $shop->storeName() }}.
         </footer>
     </div>

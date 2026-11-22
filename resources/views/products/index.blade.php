@@ -11,7 +11,7 @@
     <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <form method="GET" action="{{ route('products.index') }}" class="flex flex-1 flex-col gap-2 sm:flex-row">
             <div class="relative flex-1">
-                <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-400">
+                <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-stone-500">
                     <x-heroicon-o-magnifying-glass class="h-5 w-5" />
                 </span>
                 <x-text-input name="q" type="search" class="pl-10" :value="$search" placeholder="Search by name or SKU…" />
@@ -71,7 +71,7 @@
                             <td class="px-5 py-3.5">
                                 <a href="{{ route('products.show', $product) }}" class="block">
                                     <span class="block font-medium text-stone-900">{{ $product->name }}</span>
-                                    <span class="text-xs text-stone-400">{{ $product->sku ?: 'No SKU' }} · per {{ $product->unit }}</span>
+                                    <span class="text-xs text-stone-500">{{ $product->sku ?: 'No SKU' }} · per {{ $product->unit }}</span>
                                 </a>
                             </td>
                             <td class="px-5 py-3.5 text-right">
@@ -81,7 +81,7 @@
                                     <x-badge tone="rose">{{ rtrim(rtrim(number_format((float) $product->stock_qty, 3), '0'), '.') }} {{ $product->unit }}</x-badge>
                                 @else
                                     <span class="font-semibold text-stone-800">{{ rtrim(rtrim(number_format((float) $product->stock_qty, 3), '0'), '.') }}</span>
-                                    <span class="text-xs text-stone-400">{{ $product->unit }}</span>
+                                    <span class="text-xs text-stone-500">{{ $product->unit }}</span>
                                 @endif
                             </td>
                             <td class="px-5 py-3.5 text-right text-stone-600"><x-money :value="$product->purchase_price" /></td>

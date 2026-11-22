@@ -48,10 +48,10 @@
                                     <span class="mt-0.5 block text-sm text-stone-600">
                                         {{ $data['message'] ?? 'Check your stock levels.' }}
                                     </span>
-                                    <span class="mt-1 block text-xs text-stone-400">{{ $notification->created_at->diffForHumans() }}</span>
+                                    <span class="mt-1 block text-xs text-stone-500">{{ $notification->created_at->diffForHumans() }}</span>
                                 </span>
 
-                                <x-heroicon-o-chevron-right class="mt-2 h-4 w-4 shrink-0 text-stone-400" />
+                                <x-heroicon-o-chevron-right class="mt-2 h-4 w-4 shrink-0 text-stone-500" />
                             </button>
                         </form>
                     </li>

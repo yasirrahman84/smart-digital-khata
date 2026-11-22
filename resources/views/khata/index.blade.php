@@ -79,7 +79,7 @@
                                     @if ($entry->customer)
                                         <a href="{{ route('customers.show', $entry->customer) }}" class="font-medium text-emerald-700 hover:text-emerald-900">{{ $entry->customer->name }}</a>
                                     @else
-                                        <span class="text-stone-400">Deleted customer</span>
+                                        <span class="text-stone-500">Deleted customer</span>
                                     @endif
                                 </td>
                                 <td class="px-5 py-3 text-stone-600">{{ $entry->description ?: '—' }}</td>

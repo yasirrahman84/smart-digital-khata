@@ -6,10 +6,26 @@
     display: none !important;
 }
 
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+        outline: 2px solid #059669;
+        outline-offset: 2px;
+    }
+}
+
 @layer utilities {
     .money {
         font-variant-numeric: tabular-nums;
     }
+}
+
+@page {
+    size: A4;
+    margin: 12mm;
 }
 
 @media print {
@@ -19,10 +35,41 @@
 
     body {
         background: #fff !important;
+        font-size: 12px;
     }
 
     .print-card {
         border: 0 !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        break-inside: avoid;
+    }
+
+    a[href] {
+        text-decoration: none;
+        color: inherit;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

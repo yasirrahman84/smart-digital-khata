@@ -5,8 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#022c22">
+    <meta name="description" content="{{ $description ?? 'Smart Digital Khata — udhaar ledger, stock alerts and payment reminders for Kirana stores.' }}">
 
     <title>{{ isset($title) ? $title.' · '.config('app.name') : config('app.name') }}</title>
+
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:title" content="{{ isset($title) ? $title.' · '.config('app.name') : config('app.name') }}">
+    <meta property="og:description" content="Khata, stock and payment reminders for small shops.">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -14,6 +24,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-full bg-stone-100 font-sans text-stone-800 antialiased">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-emerald-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
+    Skip to main content
+</a>
+
+<noscript>
+    <div class="bg-amber-100 px-4 py-2 text-center text-sm font-medium text-amber-900">
+        Please enable JavaScript. The menus, cart and charts need it to work.
+    </div>
+</noscript>
+
 @php
     $user = auth()->user();
 
@@ -160,18 +180,51 @@
             </div>
         </header>
 
-        <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-10">
+        <main id="main-content" class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-10">
             @if (session('success'))
-                <div class="mb-4 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                <div
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-init="setTimeout(() => show = false, 7000)"
+                    x-transition.opacity.duration.300ms
+                    role="status"
+                    aria-live="polite"
+                    class="mb-4 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+                >
                     <x-heroicon-o-check-circle class="mt-0.5 h-5 w-5 shrink-0" />
-                    <p>{{ session('success') }}</p>
+                    <p class="flex-1">{{ session('success') }}</p>
+                    <button type="button" @click="show = false" class="-mr-1 rounded-lg p-1 text-emerald-700 hover:bg-emerald-100" aria-label="Dismiss message">
+                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                    </button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                <div
+                    x-data="{ show: true }"
+                    x-show="show"
+                    role="alert"
+                    class="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"
+                >
                     <x-heroicon-o-exclamation-triangle class="mt-0.5 h-5 w-5 shrink-0" />
-                    <p>{{ session('error') }}</p>
+                    <p class="flex-1">{{ session('error') }}</p>
+                    <button type="button" @click="show = false" class="-mr-1 rounded-lg p-1 text-rose-700 hover:bg-rose-100" aria-label="Dismiss message">
+                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                    </button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div role="alert" class="mb-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                    <x-heroicon-o-exclamation-triangle class="mt-0.5 h-5 w-5 shrink-0" />
+                    <div>
+                        <p class="font-semibold">Please check the form and try again.</p>
+                        <ul class="mt-1 list-inside list-disc space-y-0.5 text-xs">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             @endif
 

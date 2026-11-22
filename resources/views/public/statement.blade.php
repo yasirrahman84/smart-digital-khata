@@ -36,13 +36,13 @@
         <section class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
             <div class="flex items-start justify-between gap-4">
                 <div class="min-w-0">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Statement for</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Statement for</p>
                     <p class="truncate text-lg font-bold text-stone-900">{{ $customer->name }}</p>
                     <p class="text-xs text-stone-500">Updated {{ now()->format('d M Y, g:i a') }}</p>
                 </div>
 
                 <div class="text-right">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Balance</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Balance</p>
                     <p class="text-2xl font-extrabold {{ $balance > 0 ? 'text-rose-600' : 'text-emerald-700' }}">
                         <x-money :value="$balance" />
                     </p>
@@ -120,7 +120,7 @@
             </a>
         </div>
 
-        <p class="pb-4 text-center text-[11px] text-stone-400">Powered by Smart Digital Khata</p>
+        <p class="pb-4 text-center text-[11px] text-stone-500">Powered by Smart Digital Khata</p>
     </main>
 </div>
 </body>

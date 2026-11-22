@@ -167,7 +167,7 @@
 
                     @if ($entries->isEmpty())
                         <div class="px-5 py-12 text-center">
-                            <span class="mx-auto grid h-11 w-11 place-items-center rounded-full bg-stone-100 text-stone-400">
+                            <span class="mx-auto grid h-11 w-11 place-items-center rounded-full bg-stone-100 text-stone-500">
                                 <x-heroicon-o-book-open class="h-5 w-5" />
                             </span>
                             <p class="mt-3 font-medium text-stone-700">No entries yet</p>
@@ -193,7 +193,7 @@
                                             <td class="px-5 py-3">
                                                 <span class="block text-stone-800">{{ $entry->description ?: ($entry->isUdhaar() ? 'Udhaar' : 'Payment') }}</span>
                                                 @if ($entry->sale)
-                                                    <span class="text-xs text-stone-400">Sale {{ $entry->sale->invoice_no }}</span>
+                                                    <span class="text-xs text-stone-500">Sale {{ $entry->sale->invoice_no }}</span>
                                                 @endif
                                             </td>
                                             <td class="whitespace-nowrap px-5 py-3 text-right font-medium text-rose-600">
@@ -214,7 +214,7 @@
                                                     <form method="POST" action="{{ route('customers.entries.destroy', [$customer, $entry]) }}" onsubmit="return confirm('Delete this entry?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="rounded-lg p-1.5 text-stone-400 hover:bg-rose-50 hover:text-rose-600" title="Delete entry">
+                                                        <button type="submit" class="rounded-lg p-1.5 text-stone-500 hover:bg-rose-50 hover:text-rose-600" title="Delete entry">
                                                             <x-heroicon-o-trash class="h-4 w-4" />
                                                         </button>
                                                     </form>
@@ -276,7 +276,7 @@
                             <li class="rounded-xl bg-stone-50 p-3">
                                 <div class="flex items-center justify-between gap-2">
                                     <x-badge :tone="$message->status === 'failed' ? 'rose' : 'emerald'">{{ ucfirst($message->status) }}</x-badge>
-                                    <span class="text-xs text-stone-400">{{ $message->created_at->format('d M Y') }}</span>
+                                    <span class="text-xs text-stone-500">{{ $message->created_at->format('d M Y') }}</span>
                                 </div>
                                 <p class="mt-2 line-clamp-3 text-xs leading-relaxed text-stone-600">{{ $message->body }}</p>
                             </li>
